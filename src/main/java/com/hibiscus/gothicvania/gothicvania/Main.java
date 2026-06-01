@@ -2,6 +2,7 @@ package com.hibiscus.gothicvania.gothicvania;
 
 import com.hibiscus.gothicvania.gothicvania.screens.InGameScreen;
 import com.hibiscus.gothicvania.gothicvania.utils.GameLogic;
+import com.hibiscus.gothicvania.gothicvania.utils.PlayerInput;
 import de.gurkenlabs.litiengine.*;
 import de.gurkenlabs.litiengine.resources.Resources;
 
@@ -31,6 +32,7 @@ public class Main {
         Resources.load("game.litidata");
 
         GameLogic.init();
+        PlayerInput.init();
 
         // load the first level (resources for the map were implicitly loaded from the game file)
         Game.world().loadEnvironment("level1");
