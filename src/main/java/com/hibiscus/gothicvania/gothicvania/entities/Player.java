@@ -64,7 +64,7 @@ public class Player extends Creature implements IUpdateable {
         jumpAnimation = new Animation(Resources.spritesheets().get("player-jump-right"), false);
         controller.add(jumpAnimation);
         controller.add(flippedAnimation(jumpAnimation, "player-jump-left", false));
-        controller.addRule(x -> x.isTouchingGround(), x -> "player-jump-" + x.getFacingDirection().name().toLowerCase(), 100);
+        controller.addRule(Player::isTouchingGround, x -> "player-jump-" + x.getFacingDirection().name().toLowerCase(), 100);
         return controller;
     }
 
