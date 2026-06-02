@@ -1,4 +1,4 @@
-package com.hibiscus.gothicvania.gothicvania.abilities;
+package com.hibiscusgames.gothicvania.abilities;
 
 import de.gurkenlabs.litiengine.Direction;
 import de.gurkenlabs.litiengine.Game;
@@ -15,8 +15,7 @@ import java.util.Optional;
 
 public class JumpEffect extends ForceEffect {
     protected JumpEffect(ICombatEntity executor, int strength, int duration){
-        super(TargetingStrategy.executingEntity(), executor, strength);
-        this.setDuration(duration);
+        super(TargetingStrategy.executingEntity(), executor, strength, duration);
     }
 
     @Override

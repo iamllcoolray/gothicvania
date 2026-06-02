@@ -1,4 +1,4 @@
-package com.hibiscus.gothicvania.gothicvania.abilities;
+package com.hibiscusgames.gothicvania.abilities;
 
 import de.gurkenlabs.litiengine.abilities.Ability;
 import de.gurkenlabs.litiengine.abilities.AbilityInfo;
@@ -10,6 +10,6 @@ public class Jump extends Ability {
     public Jump(Creature executor) {
         super(executor);
 
-        addEffect(new JumpEffect(getExecutor(), getAttributes().value().get(), getAttributes().duration().get()));
+        addEffect(new JumpEffect(getExecutor(), getAttributes().value().getValue(), getAttributes().duration().getValue()));
     }
 }

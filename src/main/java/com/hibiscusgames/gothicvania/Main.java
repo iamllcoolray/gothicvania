@@ -1,8 +1,8 @@
-package com.hibiscus.gothicvania.gothicvania;
+package com.hibiscusgames.gothicvania;
 
-import com.hibiscus.gothicvania.gothicvania.screens.InGameScreen;
-import com.hibiscus.gothicvania.gothicvania.utils.GameLogic;
-import com.hibiscus.gothicvania.gothicvania.utils.PlayerInput;
+import com.hibiscusgames.gothicvania.screens.InGameScreen;
+import com.hibiscusgames.gothicvania.utils.GameLogic;
+import com.hibiscusgames.gothicvania.utils.PlayerInput;
 import de.gurkenlabs.litiengine.*;
 import de.gurkenlabs.litiengine.resources.Resources;
 

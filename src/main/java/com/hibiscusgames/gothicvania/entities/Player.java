@@ -1,34 +1,30 @@
-package com.hibiscus.gothicvania.gothicvania.entities;
+package com.hibiscusgames.gothicvania.entities;
 
-import com.hibiscus.gothicvania.gothicvania.abilities.Jump;
+import com.hibiscusgames.gothicvania.abilities.Jump;
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.IUpdateable;
 import de.gurkenlabs.litiengine.entities.*;
 import de.gurkenlabs.litiengine.graphics.animation.Animation;
 import de.gurkenlabs.litiengine.graphics.animation.CreatureAnimationController;
 import de.gurkenlabs.litiengine.graphics.animation.IEntityAnimationController;
-import de.gurkenlabs.litiengine.input.Input;
 import de.gurkenlabs.litiengine.input.PlatformingMovementController;
 import de.gurkenlabs.litiengine.physics.Collision;
 import de.gurkenlabs.litiengine.physics.IMovementController;
 import de.gurkenlabs.litiengine.resources.Resources;
 
-import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 
 import static de.gurkenlabs.litiengine.graphics.animation.AnimationController.flippedAnimation;
 
 @EntityInfo(width = 82, height = 60)
-@MovementInfo(velocity = 70)
+@MovementInfo(velocity = 120)
 @CollisionInfo(collisionBoxWidth = 8, collisionBoxHeight = 44, collision = true)
 public class Player extends Creature implements IUpdateable {
     private static Player instance;
 
-    private Animation jumpAnimation;
-
     private final Jump jump;
 
-    private boolean isMoving;
+    private boolean isMoving, isCrouching = false;
 
     private Player(){
         super("player");
@@ -48,6 +44,14 @@ public class Player extends Creature implements IUpdateable {
         this.isMoving = isMoving;
     }
 
+    public void setIsCrouching(boolean isCrouching){
+        this.isCrouching = isCrouching;
+    }
+
+    public boolean getIsCrouching(){
+        return isCrouching;
+    }
+
     @Override
     public void update() {
 
@@ -59,12 +63,19 @@ public class Player extends Creature implements IUpdateable {
     }
 
     @Override
-    protected IEntityAnimationController<?> createAnimationController() {
+    protected IEntityAnimationController<? extends Creature> createAnimationController() {
         CreatureAnimationController<Player> controller = new CreatureAnimationController<>(this, true);
-        jumpAnimation = new Animation(Resources.spritesheets().get("player-jump-right"), false);
+
+        Animation jumpAnimation = new Animation(Resources.spritesheets().get("player-jump-right"), false);
         controller.add(jumpAnimation);
         controller.add(flippedAnimation(jumpAnimation, "player-jump-left", false));
-        controller.addRule(Player::isTouchingGround, x -> "player-jump-" + x.getFacingDirection().name().toLowerCase(), 100);
+        controller.addRule(x -> !x.isTouchingGround(), x -> "player-jump-" + x.getFacingDirection().name().toLowerCase(), 100);
+
+        Animation crouchAnimation = new Animation(Resources.spritesheets().get("player-crouch-right"), true);
+        controller.add(crouchAnimation);
+        controller.add(flippedAnimation(crouchAnimation, "player-crouch-left", false));
+        controller.addRule(Player::getIsCrouching, x -> "player-crouch-" + x.getFacingDirection().name().toLowerCase(), 99);
+
         return controller;
     }
 
@@ -75,7 +86,7 @@ public class Player extends Creature implements IUpdateable {
 
     @Action(description = "This performs the jump ability for the player's entity.")
     public void jump() {
-        if (this.isTouchingGround() || !this.jump.canCast()) {
+        if (!this.isTouchingGround() || !this.jump.canCast()) {
             return;
         }
 
@@ -86,9 +97,9 @@ public class Player extends Creature implements IUpdateable {
         Rectangle2D groundCheck = new Rectangle2D.Double(getCollisionBox().getX(), getCollisionBox().getY(), getCollisionBoxWidth(), getCollisionBoxHeight() + 1);
 
         if (groundCheck.getMaxY() > Game.physics().getBounds().getMaxY()) {
-            return false;
+            return true;
         }
 
-        return !Game.physics().collides(groundCheck, Collision.STATIC);
+        return Game.physics().collides(groundCheck, Collision.STATIC);
     }
 }

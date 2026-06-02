@@ -1,6 +1,6 @@
-package com.hibiscus.gothicvania.gothicvania.utils;
+package com.hibiscusgames.gothicvania.utils;
 
-import com.hibiscus.gothicvania.gothicvania.entities.Player;
+import com.hibiscusgames.gothicvania.entities.Player;
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.entities.Spawnpoint;
 import de.gurkenlabs.litiengine.graphics.Camera;

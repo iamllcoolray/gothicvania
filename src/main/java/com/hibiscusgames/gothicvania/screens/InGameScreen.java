@@ -1,4 +1,4 @@
-package com.hibiscus.gothicvania.gothicvania.screens;
+package com.hibiscusgames.gothicvania.screens;
 
 import de.gurkenlabs.litiengine.gui.screens.GameScreen;
 

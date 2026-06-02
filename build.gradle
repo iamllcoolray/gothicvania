@@ -3,7 +3,7 @@ plugins {
     id 'application'
 }
 
-group 'com.hibiscus.gothicvania.gothicvania'
+group 'com.hibiscusgames.gothicvania'
 version '1.0'
 
 repositories {
