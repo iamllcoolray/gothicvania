@@ -49,6 +49,10 @@ public class Player extends Creature implements IUpdateable {
         return instance;
     }
 
+    public void setIsMoving(boolean isMoving){
+        this.isMoving = isMoving;
+    }
+
     @Override
     public void update() {
 
