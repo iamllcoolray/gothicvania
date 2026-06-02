@@ -34,11 +34,6 @@ public class Player extends Creature implements IUpdateable {
         super("player");
 
         this.jump = new Jump(this);
-
-        Input.keyboard().onKeyPressed(KeyEvent.VK_A, e -> isMoving = true);
-        Input.keyboard().onKeyPressed(KeyEvent.VK_D, e -> isMoving = true);
-        Input.keyboard().onKeyReleased(KeyEvent.VK_A, e -> isMoving = false);
-        Input.keyboard().onKeyReleased(KeyEvent.VK_D, e -> isMoving = false);
     }
 
     public static Player instance(){
