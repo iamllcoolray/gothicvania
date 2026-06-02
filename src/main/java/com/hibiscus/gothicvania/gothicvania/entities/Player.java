@@ -4,13 +4,19 @@ import com.hibiscus.gothicvania.gothicvania.abilities.Jump;
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.IUpdateable;
 import de.gurkenlabs.litiengine.entities.*;
+import de.gurkenlabs.litiengine.graphics.animation.Animation;
+import de.gurkenlabs.litiengine.graphics.animation.CreatureAnimationController;
+import de.gurkenlabs.litiengine.graphics.animation.IEntityAnimationController;
 import de.gurkenlabs.litiengine.input.Input;
 import de.gurkenlabs.litiengine.input.PlatformingMovementController;
 import de.gurkenlabs.litiengine.physics.Collision;
 import de.gurkenlabs.litiengine.physics.IMovementController;
+import de.gurkenlabs.litiengine.resources.Resources;
 
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
+
+import static de.gurkenlabs.litiengine.graphics.animation.AnimationController.flippedAnimation;
 
 @EntityInfo(width = 82, height = 60)
 @MovementInfo(velocity = 70)
@@ -18,11 +24,11 @@ import java.awt.geom.Rectangle2D;
 public class Player extends Creature implements IUpdateable {
     private static Player instance;
 
+    private Animation jumpAnimation;
+
     private final Jump jump;
 
-    public static final int MAX_ADDITIONAL_JUMPS = 1;
     private boolean isMoving;
-    private int consecutiveJumps;
 
     private Player(){
         super("player");
@@ -45,14 +51,22 @@ public class Player extends Creature implements IUpdateable {
 
     @Override
     public void update() {
-        if (this.isTouchingGround()) {
-            this.consecutiveJumps = 0;
-        }
+
     }
 
     @Override
     public boolean isIdle() {
         return !isMoving;
+    }
+
+    @Override
+    protected IEntityAnimationController<?> createAnimationController() {
+        CreatureAnimationController<Player> controller = new CreatureAnimationController<>(this, true);
+        jumpAnimation = new Animation(Resources.spritesheets().get("player-jump-right"), false);
+        controller.add(jumpAnimation);
+        controller.add(flippedAnimation(jumpAnimation, "player-jump-left", false));
+        controller.addRule(x -> x.isTouchingGround(), x -> "player-jump-" + x.getFacingDirection().name().toLowerCase(), 100);
+        return controller;
     }
 
     @Override
@@ -62,25 +76,20 @@ public class Player extends Creature implements IUpdateable {
 
     @Action(description = "This performs the jump ability for the player's entity.")
     public void jump() {
-        if (this.consecutiveJumps >= MAX_ADDITIONAL_JUMPS || !this.jump.canCast()) {
+        if (this.isTouchingGround() || !this.jump.canCast()) {
             return;
         }
 
         this.jump.cast();
-        this.consecutiveJumps++;
     }
 
-    private boolean isTouchingGround() {
-        // the idea of this ground check is to extend the current collision box by
-        // one pixel and see if
-        // a) it collides with any static collision box
+    public boolean isTouchingGround() {
         Rectangle2D groundCheck = new Rectangle2D.Double(getCollisionBox().getX(), getCollisionBox().getY(), getCollisionBoxWidth(), getCollisionBoxHeight() + 1);
 
-        // b) it collides with the map's boundaries
         if (groundCheck.getMaxY() > Game.physics().getBounds().getMaxY()) {
-            return true;
+            return false;
         }
 
-        return Game.physics().collides(groundCheck, Collision.STATIC);
+        return !Game.physics().collides(groundCheck, Collision.STATIC);
     }
 }
