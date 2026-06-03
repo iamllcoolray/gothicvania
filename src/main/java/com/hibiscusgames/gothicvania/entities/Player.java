@@ -47,6 +47,13 @@ public class Player extends Creature implements IUpdateable {
 
     public void setIsCrouching(boolean isCrouching){
         this.isCrouching = isCrouching;
+        if (isCrouching) {
+            this.setCollisionBoxWidth(40);
+            this.setCollisionBoxHeight(30);
+        } else {
+            this.setCollisionBoxWidth(8);
+            this.setCollisionBoxHeight(44);
+        }
     }
 
     public void setIsCrouchKicking(boolean isCrouchKicking){
@@ -97,6 +104,12 @@ public class Player extends Creature implements IUpdateable {
     public void update() {
         previousPositionY = currentPositionY;
         currentPositionY = this.getY();
+
+        if (!isTouchingGround()) {
+            this.setCollisionBoxWidth(40);
+        } else {
+            this.setCollisionBoxWidth(8);
+        }
     }
 
     @Override
@@ -108,40 +121,45 @@ public class Player extends Creature implements IUpdateable {
     protected IEntityAnimationController<? extends Creature> createAnimationController() {
         CreatureAnimationController<Player> controller = new CreatureAnimationController<>(this, true);
 
+//        Animation jumpAnimation = new Animation(Resources.spritesheets().get("player-jump-right"), false);
+//        controller.add(jumpAnimation);
+//        controller.add(flippedAnimation(jumpAnimation, "player-jump-left", false));
+//        controller.addRule(Player::isJumpingUp, x -> "player-jump-" + x.getFacingDirection().name().toLowerCase(), 0);
+
         Animation jumpAnimation = new Animation(Resources.spritesheets().get("player-jump-right"), false);
         controller.add(jumpAnimation);
         controller.add(flippedAnimation(jumpAnimation, "player-jump-left", false));
-        controller.addRule(x -> x.isJumpingUp(), x -> "player-jump-" + x.getFacingDirection().name().toLowerCase(), 0);
+        controller.addRule(x -> !x.isTouchingGround(), x -> "player-jump-" + x.getFacingDirection().name().toLowerCase(), 0);
 
         Animation crouchAnimation = new Animation(Resources.spritesheets().get("player-crouch-right"), false);
         controller.add(crouchAnimation);
         controller.add(flippedAnimation(crouchAnimation, "player-crouch-left", false));
-        controller.addRule(x -> x.canCrouch(), x -> "player-crouch-" + x.getFacingDirection().name().toLowerCase(), 0);
+        controller.addRule(Player::canCrouch, x -> "player-crouch-" + x.getFacingDirection().name().toLowerCase(), 0);
 
         Animation punchAnimation = new Animation(Resources.spritesheets().get("player-punch-right"), false);
         controller.add(punchAnimation);
         controller.add(flippedAnimation(punchAnimation, "player-punch-left", false));
-        controller.addRule(x -> x.canPunch(), x -> "player-punch-" + x.getFacingDirection().name().toLowerCase(), 0);
+        controller.addRule(Player::canPunch, x -> "player-punch-" + x.getFacingDirection().name().toLowerCase(), 0);
 
         Animation kickAnimation = new Animation(Resources.spritesheets().get("player-kick-right"), false);
         controller.add(kickAnimation);
         controller.add(flippedAnimation(kickAnimation, "player-kick-left", false));
-        controller.addRule(x -> x.canKick(), x -> "player-kick-" + x.getFacingDirection().name().toLowerCase(), 0);
+        controller.addRule(Player::canKick, x -> "player-kick-" + x.getFacingDirection().name().toLowerCase(), 0);
 
         Animation crouchKickAnimation = new Animation(Resources.spritesheets().get("player-crouch_kick-right"), false);
         controller.add(crouchKickAnimation);
         controller.add(flippedAnimation(crouchKickAnimation, "player-crouch_kick-left", false));
-        controller.addRule(x -> x.canCrouchKick(), x -> "player-crouch_kick-" + x.getFacingDirection().name().toLowerCase(), 0);
+        controller.addRule(Player::canCrouchKick, x -> "player-crouch_kick-" + x.getFacingDirection().name().toLowerCase(), 0);
 
-        Animation fallAnimation = new Animation(Resources.spritesheets().get("player-fall-right"), false);
-        controller.add(fallAnimation);
-        controller.add(flippedAnimation(fallAnimation, "player-fall-left", false));
-        controller.addRule(x -> x.isFallingDown(), x -> "player-fall-" + x.getFacingDirection().name().toLowerCase(), 0);
+//        Animation fallAnimation = new Animation(Resources.spritesheets().get("player-fall-right"), false);
+//        controller.add(fallAnimation);
+//        controller.add(flippedAnimation(fallAnimation, "player-fall-left", false));
+//        controller.addRule(Player::isFallingDown, x -> "player-fall-" + x.getFacingDirection().name().toLowerCase(), 0);
 
         Animation flyingKickAnimation = new Animation(Resources.spritesheets().get("player-flying_kick-right"), false);
         controller.add(flyingKickAnimation);
         controller.add(flippedAnimation(flyingKickAnimation, "player-flying_kick-left", false));
-        controller.addRule(x -> x.canFlyingKick(), x -> "player-flying_kick-" + x.getFacingDirection().name().toLowerCase(), 0);
+        controller.addRule(Player::canFlyingKick, x -> "player-flying_kick-" + x.getFacingDirection().name().toLowerCase(), 0);
 
 //        Animation hurtAnimation = new Animation(Resources.spritesheets().get("player-hurt-right"), false);
 //        controller.add(hurtAnimation);
