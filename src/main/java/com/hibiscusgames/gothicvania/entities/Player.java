@@ -24,7 +24,8 @@ public class Player extends Creature implements IUpdateable {
 
     private final Jump jump;
 
-    private boolean isMoving, isCrouching = false;
+    private boolean isMoving, isCrouching, isPunching, isKicking, isCrouchKicking, isFlyKicking = false;
+    private double previousPositionY, currentPositionY;
 
     private Player(){
         super("player");
@@ -48,17 +49,54 @@ public class Player extends Creature implements IUpdateable {
         this.isCrouching = isCrouching;
     }
 
-    public boolean getIsCrouching(){
-        return isCrouching;
+    public void setIsCrouchKicking(boolean isCrouchKicking){
+        this.isCrouchKicking = isCrouchKicking;
+    }
+
+    public void setIsPunching(boolean isPunching){
+        this.isPunching = isPunching;
+    }
+
+    public void setIsKicking(boolean isKicking){
+        this.isKicking = isKicking;
+    }
+
+    public void setIsFlyKicking(boolean isFlyKicking){
+        this.isFlyKicking = isFlyKicking;
     }
 
     public boolean canCrouch() {
-        return getIsCrouching() && isTouchingGround();
+        return isCrouching && isTouchingGround();
+    }
+
+    public boolean canPunch() {
+        return isPunching && isTouchingGround();
+    }
+
+    public boolean canKick() {
+        return isKicking && isTouchingGround();
+    }
+
+    public boolean canFlyingKick() {
+        return !isTouchingGround() && isFlyKicking;
+    }
+
+    public boolean canCrouchKick() {
+        return canCrouch() && isCrouchKicking;
+    }
+
+    public boolean isJumpingUp(){
+        return previousPositionY > currentPositionY && !isTouchingGround();
+    }
+
+    public boolean isFallingDown(){
+        return previousPositionY < currentPositionY && !isTouchingGround();
     }
 
     @Override
     public void update() {
-
+        previousPositionY = currentPositionY;
+        currentPositionY = this.getY();
     }
 
     @Override
@@ -73,12 +111,42 @@ public class Player extends Creature implements IUpdateable {
         Animation jumpAnimation = new Animation(Resources.spritesheets().get("player-jump-right"), false);
         controller.add(jumpAnimation);
         controller.add(flippedAnimation(jumpAnimation, "player-jump-left", false));
-        controller.addRule(x -> !x.isTouchingGround(), x -> "player-jump-" + x.getFacingDirection().name().toLowerCase(), 0);
+        controller.addRule(x -> x.isJumpingUp(), x -> "player-jump-" + x.getFacingDirection().name().toLowerCase(), 0);
 
         Animation crouchAnimation = new Animation(Resources.spritesheets().get("player-crouch-right"), false);
         controller.add(crouchAnimation);
         controller.add(flippedAnimation(crouchAnimation, "player-crouch-left", false));
         controller.addRule(x -> x.canCrouch(), x -> "player-crouch-" + x.getFacingDirection().name().toLowerCase(), 0);
+
+        Animation punchAnimation = new Animation(Resources.spritesheets().get("player-punch-right"), false);
+        controller.add(punchAnimation);
+        controller.add(flippedAnimation(punchAnimation, "player-punch-left", false));
+        controller.addRule(x -> x.canPunch(), x -> "player-punch-" + x.getFacingDirection().name().toLowerCase(), 0);
+
+        Animation kickAnimation = new Animation(Resources.spritesheets().get("player-kick-right"), false);
+        controller.add(kickAnimation);
+        controller.add(flippedAnimation(kickAnimation, "player-kick-left", false));
+        controller.addRule(x -> x.canKick(), x -> "player-kick-" + x.getFacingDirection().name().toLowerCase(), 0);
+
+        Animation crouchKickAnimation = new Animation(Resources.spritesheets().get("player-crouch_kick-right"), false);
+        controller.add(crouchKickAnimation);
+        controller.add(flippedAnimation(crouchKickAnimation, "player-crouch_kick-left", false));
+        controller.addRule(x -> x.canCrouchKick(), x -> "player-crouch_kick-" + x.getFacingDirection().name().toLowerCase(), 0);
+
+        Animation fallAnimation = new Animation(Resources.spritesheets().get("player-fall-right"), false);
+        controller.add(fallAnimation);
+        controller.add(flippedAnimation(fallAnimation, "player-fall-left", false));
+        controller.addRule(x -> x.isFallingDown(), x -> "player-fall-" + x.getFacingDirection().name().toLowerCase(), 0);
+
+        Animation flyingKickAnimation = new Animation(Resources.spritesheets().get("player-flying_kick-right"), false);
+        controller.add(flyingKickAnimation);
+        controller.add(flippedAnimation(flyingKickAnimation, "player-flying_kick-left", false));
+        controller.addRule(x -> x.canFlyingKick(), x -> "player-flying_kick-" + x.getFacingDirection().name().toLowerCase(), 0);
+
+//        Animation hurtAnimation = new Animation(Resources.spritesheets().get("player-hurt-right"), false);
+//        controller.add(hurtAnimation);
+//        controller.add(flippedAnimation(hurtAnimation, "player-hurt-left", false));
+//        controller.addRule(x -> x.isFallingDown(), x -> "player-hurt-" + x.getFacingDirection().name().toLowerCase(), 0);
 
         return controller;
     }

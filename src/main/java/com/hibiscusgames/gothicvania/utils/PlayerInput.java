@@ -23,5 +23,21 @@ public class PlayerInput {
         // isCrouching Handling
         Input.keyboard().onKeyPressed(KeyEvent.VK_SHIFT, e -> Player.instance().setIsCrouching(true));
         Input.keyboard().onKeyReleased(KeyEvent.VK_SHIFT, e -> Player.instance().setIsCrouching(false));
+
+        // isPunching Handling
+        Input.keyboard().onKeyPressed(KeyEvent.VK_C, e -> Player.instance().setIsPunching(true));
+        Input.keyboard().onKeyReleased(KeyEvent.VK_C, e -> Player.instance().setIsPunching(false));
+
+        // isKicking Handling
+        Input.keyboard().onKeyPressed(KeyEvent.VK_X, e -> Player.instance().setIsKicking(true));
+        Input.keyboard().onKeyReleased(KeyEvent.VK_X, e -> Player.instance().setIsKicking(false));
+
+        // isCrouchKicking Handling
+        Input.keyboard().onKeyPressed(KeyEvent.VK_X, e -> Player.instance().setIsCrouchKicking(true));
+        Input.keyboard().onKeyReleased(KeyEvent.VK_X, e -> Player.instance().setIsCrouchKicking(false));
+
+        // isFlyKicking Handling
+        Input.keyboard().onKeyPressed(KeyEvent.VK_X, e -> Player.instance().setIsFlyKicking(true));
+        Input.keyboard().onKeyReleased(KeyEvent.VK_X, e -> Player.instance().setIsFlyKicking(false));
     }
 }
