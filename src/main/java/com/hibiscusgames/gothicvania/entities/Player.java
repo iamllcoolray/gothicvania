@@ -52,6 +52,10 @@ public class Player extends Creature implements IUpdateable {
         return isCrouching;
     }
 
+    public boolean canCrouch() {
+        return getIsCrouching() && isTouchingGround();
+    }
+
     @Override
     public void update() {
 
@@ -69,12 +73,12 @@ public class Player extends Creature implements IUpdateable {
         Animation jumpAnimation = new Animation(Resources.spritesheets().get("player-jump-right"), false);
         controller.add(jumpAnimation);
         controller.add(flippedAnimation(jumpAnimation, "player-jump-left", false));
-        controller.addRule(x -> !x.isTouchingGround(), x -> "player-jump-" + x.getFacingDirection().name().toLowerCase(), 100);
+        controller.addRule(x -> !x.isTouchingGround(), x -> "player-jump-" + x.getFacingDirection().name().toLowerCase(), 0);
 
-        Animation crouchAnimation = new Animation(Resources.spritesheets().get("player-crouch-right"), true);
+        Animation crouchAnimation = new Animation(Resources.spritesheets().get("player-crouch-right"), false);
         controller.add(crouchAnimation);
         controller.add(flippedAnimation(crouchAnimation, "player-crouch-left", false));
-        controller.addRule(Player::getIsCrouching, x -> "player-crouch-" + x.getFacingDirection().name().toLowerCase(), 99);
+        controller.addRule(x -> x.canCrouch(), x -> "player-crouch-" + x.getFacingDirection().name().toLowerCase(), 0);
 
         return controller;
     }
