@@ -7,14 +7,12 @@ group 'com.hibiscusgames.gothicvania'
 version '1.0'
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven { url 'https://maven.pkg.jetbrains.space/litiengine/p/maven/releases' }
 }
 
 dependencies {
     implementation 'de.gurkenlabs:litiengine:0.12.0'
-    implementation 'com.hibiscusgames:atlas:1.0-SNAPSHOT'
 }
 
 application {

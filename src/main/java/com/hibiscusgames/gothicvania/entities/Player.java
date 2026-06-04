@@ -104,12 +104,6 @@ public class Player extends Creature implements IUpdateable {
     public void update() {
         previousPositionY = currentPositionY;
         currentPositionY = this.getY();
-
-        if (!isTouchingGround()) {
-            this.setCollisionBoxWidth(40);
-        } else {
-            this.setCollisionBoxWidth(8);
-        }
     }
 
     @Override
